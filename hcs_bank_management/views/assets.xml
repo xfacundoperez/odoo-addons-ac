@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="_assets_primary_variables_inherited_hcs_bank_management" inherit_id="web._assets_primary_variables">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/hcs_bank_management/static/src/scss/style.scss" />
+            </xpath>
+        </template>
+        <template id="assets_backend_inherited_hcs_bank_management" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/hcs_bank_management/static/src/scss/fields_extra.scss" />
+                <link rel="stylesheet" href="/hcs_bank_management/static/src/scss/form_view_extra.scss" />
+                <script src="/hcs_bank_management/static/src/js/action_call.js" type="text/javascript"/>
+            </xpath>
+        </template>
+
+        <template id="web_login_layout_inherited_hcs_bank_management" inherit_id="web.login_layout">
+            <xpath expr="//div[hasclass('container', 'py-5')]" position="replace">
+                <link rel="stylesheet" href="/hcs_bank_management/static/src/css/style.css" />
+                <link rel="stylesheet" href="/hcs_bank_management/static/src/css/login.css" />
+                <div class="container py-5">
+                    <div t-attf-class="card border-0 mx-auto bg-100 {{login_card_classes}} o_database_list" style="max-width: 300px;">
+                        <div class="card-body">
+                            <div t-attf-class="text-center pb-3 border-bottom {{'mb-3' if form_small else 'mb-4'}}">
+                                <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" style="max-height:120px; max-width: 100%; width:auto" />
+                            </div>
+                            <t t-raw="0" />
+                            <div class="text-center small mt-4 pt-3 border-top">
+                                <a class="border-right pr-2 mr-1" href="http://hcsinergia.com/" target="_blank">HC Sinergia</a>
+                                <a href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank"> Desarrollado por <span>Odoo</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

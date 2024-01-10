@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template xml:space="preserve">
+    <t t-extend="ListView.buttons">
+        <t t-jquery="button.o_list_export_xlsx" t-operation="after">
+            <button t-if="widget.modelName == 'bm.official.attendance' or widget.modelName == 'bm.official.journal'" class="btn btn-primary oe_action_button" type="button" accesskey="f">Crear registros</button>
+            <div class="btn-group o_dropdown">
+                <select t-if="widget.modelName == 'bm.official.attendance' or widget.modelName == 'bm.official.journal'" class="btn btn-secondary oe_action_select_month" style="border-radius: 3px!important; text-align: left; ">
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+
+            </div>
+        </t>
+    </t>
+</template>

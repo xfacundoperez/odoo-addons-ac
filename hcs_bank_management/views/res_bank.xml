@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Tree -->
+    <record id="bank_management_view_res_bank_format_tree" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.tree</field>
+      <field name="model">res.bank.format</field>
+      <field name="arch" type="xml">
+        <tree string="Formato de archivo">
+          <field name="title" />
+          <field name="bank_id" />
+          <field name="field_ids" />
+        </tree>
+
+      </field>
+    </record>
+
+    <record id="bank_management_view_res_bank_format_fields_tree" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.fields.tree</field>
+      <field name="model">res.bank.format.fields</field>
+      <field name="arch" type="xml">
+        <tree string="Campos del formato" editable="bottom">
+          <field name="format_id" invisible="1" />
+          <field name="name" />
+          <field name="ttype" />
+          <field name="size" />
+          <field name="decimal_size" />
+          <field name="format" />
+          <field name="isreq" />
+          <field name="desc" />
+          <field name="selection_ids" widget="many2many_tags" />
+        </tree>
+
+      </field>
+    </record>
+
+    <record id="bank_management_view_res_bank_format_fields_selection_tree" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.fields.selection.tree</field>
+      <field name="model">res.bank.format.fields.selection</field>
+      <field name="arch" type="xml">
+        <tree string="Campos del formato">
+          <field name="format_field_id" invisible="1" />
+          <field name="field_id" />
+          <field name="key" />
+          <field name="name" />
+          <field name="desc" />
+        </tree>
+
+      </field>
+    </record>
+
+    <!-- Form -->
+    <record id="bank_management_view_res_bank_format_form" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.form</field>
+      <field name="model">res.bank.format</field>
+      <field name="arch" type="xml">
+        <form string="Formato de archivo">
+          <header attrs="{'invisible': [('id', '=', False)]}">
+            <button name="action_execute" type="object" string="Probar Código" class="oe_highlight" />
+          </header>
+          <sheet>
+            <group>
+              <field name="title" />
+              <field name="bank_id" />
+              <field name="function_name" />
+            </group>
+            <hr />
+            <label for="field_ids" />
+            <field name="field_ids" />
+            <hr />
+            <label for="format_code" />
+            <field name="format_code" widget="ace" options="{'mode': 'python'}" />
+            <hr />
+            <label for="result" />
+            <field name="result" readonly="1" />
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record id="bank_management_view_res_bank_format_fields_form" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.fields.form</field>
+      <field name="model">res.bank.format.fields</field>
+      <field name="arch" type="xml">
+        <form string="Campos del formato">
+          <group>
+            <field name="format_id" invisible="1" />
+            <field name="name" />
+            <field name="ttype" />
+            <field name="size" />
+            <field name="decimal_size" />
+            <field name="format" />
+            <field name="isreq" />
+            <field name="desc" />
+            <field name="selection_ids" widget="many2many_tags" />
+          </group>
+        </form>
+
+      </field>
+    </record>
+
+    <record id="bank_management_view_res_bank_format_fields_selection_form" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.format.fields.selection.form</field>
+      <field name="model">res.bank.format.fields.selection</field>
+      <field name="arch" type="xml">
+        <form string="Seleccion del campos del formato">
+          <sheet>
+            <group>
+              <field name="format_field_id" invisible="1" />
+              <field name="field_id" />
+              <field name="key" />
+              <field name="name" />
+            </group>
+            <hr />
+            <label for="domain_rule" />
+            <field name="domain_rule" style="border: 1px solid #ccc;" widget="ace" options="{'mode': 'python'}" />
+            <hr />
+            <label for="desc" />
+            <field name="desc" />
+          </sheet>
+        </form>
+
+      </field>
+    </record>
+
+    <!-- Inherith -->
+    <record id="bank_management_view_res_bank_tree_inherith" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.tree.inherith</field>
+      <field name="model">res.bank</field>
+      <field name="inherit_id" ref="base.view_res_bank_tree" />
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='country']" position="after">
+          <field name="format_txt" />
+        </xpath>
+
+      </field>
+    </record>
+
+    <record id="bank_management_view_res_bank_form_inherith" model="ir.ui.view">
+      <field name="name">bank.management.view.res.bank.form.inherith</field>
+      <field name="model">res.bank</field>
+      <field name="inherit_id" ref="base.view_res_bank_form" />
+      <field name="arch" type="xml">
+        <xpath expr="//group[@name='communication_details']" position="after">
+          <group string="Formato de archivo TXT">
+            <field name="format_txt" />
+          </group>
+        </xpath>
+
+      </field>
+    </record>
+
+    <!-- Action -->
+    <record id="bank_management_open_view_res_bank_format" model="ir.actions.act_window">
+      <field name="name">Formatos de archivos TXT</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.bank.format</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                Agrega un nuevo formato!
+              </p>
+      </field>
+    </record>
+
+    <record id="bank_management_open_view_res_bank_format_fields" model="ir.actions.act_window">
+      <field name="name">Campos del Formato</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.bank.format.fields</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                Agrega un nuevo campo!
+              </p>
+      </field>
+    </record>
+
+    <record id="bank_management_open_view_res_bank_format_selection_fields" model="ir.actions.act_window">
+      <field name="name">Seleccion del campo del formato</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">res.bank.format.fields.selection</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                Agrega un nuevo valor del campo!
+              </p>
+      </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_res_bank_format" name="Formatos de archivos" action="bank_management_open_view_res_bank_format" parent="hcs_bank_management.menu_bm_config" sequence="2" />
+    <menuitem id="menu_res_bank_format_fields" name="Campos de formato" action="bank_management_open_view_res_bank_format_fields" parent="hcs_bank_management.menu_bm_config" sequence="3" />
+    <menuitem id="menu_res_bank_format_fields_selection" name="Seleccion del campo" action="bank_management_open_view_res_bank_format_selection_fields" parent="hcs_bank_management.menu_bm_config" sequence="4" />
+
+  </data>
+</odoo>

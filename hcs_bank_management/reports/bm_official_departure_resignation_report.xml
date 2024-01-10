@@ -1,0 +1,211 @@
+<odoo>
+  <data>
+    <report
+      id="bm_official_departure_resignation_report"
+      string="Comunicación de rescisión (PDF)"
+      model="bm.official.departure"
+      report_type="qweb-pdf"
+      name="hcs_bank_management.bm_official_departure_resignation_template"
+      file="hcs_bank_management.bm_official_departure_resignation_template"
+      print_report_name="'Comunicación de rescisión - %s' % (object.name).replace('/', '')"
+      paperformat="bm_official_paperformat_portrait"
+      menu="False" />
+
+    <template id="bm_official_departure_resignation_template">
+      <t t-call="web.html_container">
+        <style>
+          * {
+          box-sizing: border-box;
+          font-size: 14px;
+          }
+          .d-none {
+          display: none;
+          }
+        </style>
+        <div class="page">
+          <t t-foreach="docs" t-as="doc">
+            <div class="col-md-6">
+              <h5 style="text-decoration: underline;width: 100%;text-align: center;">LIQUIDACIÓN
+                FINAL
+                DE HABERES POR TÉRMINO DE LA RELACIÓN LABORAL</h5>
+              <br />
+              <table style="width: 100%;">
+                <tbody>
+                  <tr>
+                    <td style="text-align: right; width: 45%;">Trabajador/a</td>
+                    <td style="width: 5%">:</td>
+                    <td style="width: 50%;">
+                      <span t-esc="doc.official_id.name" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Fecha de ingreso</td>
+                    <td>:</td>
+                    <td>
+                      <span t-field="doc.official_id.admission_date" t-options='{"widget": "date","format": "yyyy/MM/dd"}'/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Fecha de egreso</td>
+                    <td>:</td>
+                    <td>
+                      <span t-field="doc.departure_start" t-options='{"widget": "date","format": "yyyy/MM/dd"}'/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Antigüedad</td>
+                    <td>:</td>
+                    <td>
+                      <t t-esc="doc.seniority" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Motivo de salida</td>
+                    <td>:</td>
+                    <td>
+                      <t t-esc="dict(doc.fields_get(allfields=['departure_reason'])['departure_reason']['selection'])[doc.departure_reason]"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Salida: Información adicional</td>
+                    <td>:</td>
+                    <td>
+                      <span t-esc="doc.departure_description" />
+                    </td>
+                  </tr>
+                  <tr t-if="doc.fired_justified">
+                    <td style="text-align: right;">Causa justificada</td>
+                    <td>:</td>
+                    <td>
+                      <t t-esc="dict(doc.fields_get(allfields=['fired_causes'])['fired_causes']['selection'])[doc.fired_causes]"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">
+                      <br />
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Promedio mensual</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.average_monthly_salary)" /></td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Promedio diario</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.average_daily_salary)" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">
+                      <br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;font-weight: bold;">(+) PAGOS</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Salario por dias trabajados</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.unpaid_days_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.fired_justified">
+                    <td style="text-align: right;">Preaviso</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.notification_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.fired_justified">
+                    <td style="text-align: right;">Indemnizacion</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.compensation_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.vacation_caused_amount > 0">
+                    <td style="text-align: right;">Vacaciones causadas</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.vacation_caused_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.vacation_proportional_amount > 0">
+                    <td style="text-align: right;">Vacaciones proporcionales</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.vacation_proportional_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.vacation_delayed_amount > 0">
+                    <td style="text-align: right;">Vacaciones acumuladas</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.vacation_delayed_amount)" /></td>
+                  </tr>
+                  <tr t-if="doc.salary_bonus_amount > 0">
+                    <td style="text-align: right;">Aguinaldo proporcional</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.salary_bonus_amount)" /></td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: bold;text-align: right;">SUBTOTAL</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.subtotal_amount)" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="7"></td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;font-weight: bold;">(-) DESCUENTOS</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">Descuento de I.P.S (<span t-esc="doc.official_ips" />%)</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.ips_amount)" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">
+                      <br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: right;">TOTAL</td>
+                    <td>:</td>
+                    <td>Gs. <span t-esc="'%.2f'%(doc.total_amount)" /></td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">
+                      <br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="7">RECIBÍ LA SUMA DE <b>GUARANÍES <span
+                          style="text-transform: uppercase" t-esc="doc.official_id.nubmer_to_letter('%.2f'%(doc.total_amount))" /> (G. <span
+                          t-esc="'%.2f'%(doc.total_amount)" />)</b> DE CONFORMIDAD A LA LIQUIDACIÓN QUE
+                      ANTECEDE, EN CONCEPTO DE HABERES POR RENUNCIA VOLUNTARIA, MANIFESTANDO QUE LOS
+                      DATOS DE ANTIGÜEDAD Y SALARIOS EXPRESADOS EN LA LIQUIDACIÓN SON CORRECTOS Y
+                      VERÍDICOS; ACLARANDO NO TENER NADA MÁS QUE RECLAMAR JUDICIAL Y/O
+                      EXTRAJUDICIALMENTE A...</td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">______________________________</td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">C.I.N°:</td>
+                  </tr>
+                  <tr>
+                    <td colspan="12">FECHA:</td>
+                  </tr>
+
+                </tbody>
+              </table>
+
+            </div>
+          </t>
+        </div>
+      </t>
+    </template>
+
+  </data>
+</odoo>

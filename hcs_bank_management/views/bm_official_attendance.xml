@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree -->
+        <record id="bm_official_attendance_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.attendance.tree.view</field>
+            <field name="model">bm.official.attendance</field>
+            <field name="arch" type="xml">
+                <tree string="Asistencia del funcionario" default_order='attendance_date'>
+                    <field name="official_id" />
+                    <field name="attendance_date" invisible="1" />
+                    <field name="attendance_date_display" />
+                    <field name="worked_days" />
+                    <!-- <field name="worked_hours" /> -->
+                    <field name="days_ids" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="bm_official_attendance_tree_days_view" model="ir.ui.view">
+            <field name="name">bm.official.attendance.tree.days.view</field>
+            <field name="model">bm.official.attendance.days</field>
+            <field name="arch" type="xml">
+                <tree string="Dias de la asistencia" editable="bottom" delete="true">
+                    <field name="day_date" attrs="{'readonly': [('missed_reason', 'in', ['L', 'U'])]}" />
+                    <field name="time_date" widget="float_time" attrs="{'readonly': ['&amp;', ('missed_reason', 'in', ['L', 'U']), ('laboral', '=', False)]}" />
+                    <field name="reason" required="1" attrs="{'readonly': [('missed_reason', 'in', ['L', 'U'])]}" />
+                    <field name="missed_reason" readonly="1" />
+                    <field name="laboral" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form -->
+        <record id="bm_official_attendance_form_view" model="ir.ui.view">
+            <field name="name">bm.official.attendance.form.view</field>
+            <field name="model">bm.official.attendance</field>
+            <field name="arch" type="xml">
+                <form string="Official attendances">
+                    <header attrs="{'invisible': [('id', '=', False)]}">
+                        <button name="update_movements" string="Actualizar datos" class="oe_highlight oe_read_only" type="object" help="Actualza los datos de jornales, asistencias y licencias del registro actual" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <field name="id" invisible="1" />
+                            <field name="journal_id" invisible="1" />
+                            <h1>
+                                <field name="official_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': [('id', '!=', False)]}" />
+                            </h1>
+                            <field name="attendance_date_display" />
+                        </div>
+                        <group>
+                            <group string="Información de la asistencia">
+                                <field name="official_working_hours" />
+                                <field name="worked_days" readonly="1" />
+                            </group>
+                            <group string="Cantidad de horas">
+                                <field name="missed_hours" widget="float_time" readonly="1" />
+                                <field name="departure_hours" widget="float_time" readonly="1" attrs="{'invisible': [('departure_hours', '=', 0)]}" />
+                                <field name="daytime_overtime" widget="float_time" readonly="1" attrs="{'invisible': [('daytime_overtime', '=', 0)]}" />
+                                <field name="night_overtime" widget="float_time" readonly="1" attrs="{'invisible': [('night_overtime', '=', 0)]}" />
+                                <field name="holiday_overtime" widget="float_time" readonly="1" attrs="{'invisible': [('holiday_overtime', '=', 0)]}" />
+                            </group>                            
+                        </group>
+                        <label for="days_ids" />
+                        <field name="days_ids" options="{'no_open': True, 'no_create': True}" />
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="bm_official_attendance_days_form_view" model="ir.ui.view">
+            <field name="name">bm.official.attendance.days.form.view</field>
+            <field name="model">bm.official.attendance.days</field>
+            <field name="arch" type="xml">
+                <form string="Dias de la asistencia">
+                    <sheet>
+                        <group>
+                            <field name="day_date" />
+                            <field name="missed_reason" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Filter -->
+        <record id="bm_official_attendance_view_filter" model="ir.ui.view">
+            <field name="name">bm_official_attendance_view_filter</field>
+            <field name="model">bm.official.attendance</field>
+            <field name="arch" type="xml">
+                <search string="Asistencias Search">
+                    <filter string="Periodo" name="attendance_date_filter" date="attendance_date" default_period="last_month" />
+                    <group expand="0" string="Group By">
+                        <filter string="Periodo" name="groupby_name" context="{'group_by': 'attendance_date'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_official_attendance_open_view" model="ir.actions.act_window">
+            <field name="name">Asistencia (Funcionarios)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.attendance</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('official_iscontract', '=', False)]</field>
+            <field name="context">{
+                "search_default_today":1,
+                "create": False
+                }</field>
+            <field name="search_view_id" ref="bm_official_attendance_view_filter" />
+            <field name="help" type="html">
+                <div class="o_view_nocontent_empty_folder">
+                    <p>Asistencias de los Funcionarios</p>
+                    <p>Todavia no se registró ningun Asistencia!</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="action_contract_attendance_open_view" model="ir.actions.act_window">
+            <field name="name">Asistencia (Contratados)</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.attendance</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('official_iscontract', '=', True)]</field>
+            <field name="context">{
+                "search_default_today":1,
+                "create": False
+                }</field>
+            <field name="search_view_id" ref="bm_official_attendance_view_filter" />
+            <field name="help" type="html">
+                <div class="o_view_nocontent_empty_folder">
+                    <p>Asistencias de los Contratados</p>
+                    <p>Todavia no se registró ningun Asistencia!</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Inherit -->
+        <record id="official_form_view_inherith_attendance" model="ir.ui.view">
+            <field name="name">bm.official.form.attendance.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bank_management.official_form_view" />
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="%(action_official_attendance_open_view)d" class="oe_stat_button" icon="fa-calendar" type="action" context="{'search_default_employee_id': id, 'search_default_attendance_date_filter': '1'}" help="Horas trabajadas el ultimo mes">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="hours_last_month_display" widget="float_time" />
+                                Horas
+                            </span>
+                            <span class="o_stat_text">
+                            Ultimo mes
+                            </span>
+                        </div>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_bm_options_attendance" name="Asistencias" parent="hcs_bank_management.menu_bm_options_main" sequence="2" />
+        <menuitem id="menu_bm_options_official_attendance" name="Funcionarios" action="action_official_attendance_open_view" parent="hcs_bank_management.menu_bm_options_attendance" sequence="0" />
+        <menuitem id="menu_bm_options_contract_attendance" name="Contratados" action="action_contract_attendance_open_view" parent="hcs_bank_management.menu_bm_options_attendance" sequence="1" />
+    </data>
+</odoo>

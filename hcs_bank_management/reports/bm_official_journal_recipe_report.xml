@@ -1,0 +1,197 @@
+<odoo>
+    <data>
+        <report
+            id="bm_official_journal_recipe_report"
+            string="Recibo del Funcionario (PDF)"
+            model="bm.official.journal"
+            report_type="qweb-pdf"
+            groups="base.user_admin"
+            name="hcs_bank_management.bm_official_journal_recipe_template"
+            menu="False"
+            paperformat="bm_official_paperformat_portrait" />
+
+        <template id="bm_official_journal_recipe_template_pdf">
+            <t t-call="web.html_container">
+                <style>
+                    * {
+                    box-sizing: border-box;
+                    }
+
+                    table {
+                    border-collapse: collapse;
+                    }
+
+                    thead {
+                    display: table-header-group;
+                    vertical-align: middle;
+                    border-color: inherit;
+                    }
+
+                    .table {
+                    width: 100%;
+                    max-width: 100%;
+                    margin-bottom: 1rem;
+                    background-color: transparent;
+                    }
+
+                    .table td,
+                    .table th {
+                    padding: 0.75rem;
+                    vertical-align: top;
+                    }
+
+                    .table-bordered td {
+                    border: 1px solid black;
+                    }
+
+                </style>
+                <body>
+                    <t t-foreach="[1,2]" t-as="ctable">
+                        <t t-foreach="docs" t-as="doc">
+                            <div style="width: 30%;">
+                                <t t-if="doc.official_id.company_id.logo">
+                                    <img t-attf-src="data:image/jpg;base64,{{ doc.official_id.company_id.logo }}" style="max-height:120px; max-width: 100%; width:auto" />
+                                </t>
+                            </div>
+                            <table class="table">
+                                <thead style="font-size: 1.2rem">
+                                    <tr>
+                                        <th  colspan="6">
+                                            <span style="font-size: 33px;">LIQUIDACION DE SALARIOS</span>
+                                            <br/>
+                                            <span style="font-size: 24px;">(Conforme al art. 235 del Código Laboral)</span>
+                                        </th>
+                                    </tr>
+                                    <tr style="text-align: left;">
+                                        <th style="text-align: right;">Empleador:</th>
+                                        <th colspan="3"><span t-field="doc.official_id.company_id.name" /></th>
+                                        <th style="text-align: right;">Nro.Patronal:</th>
+                                        <th><span t-field="doc.official_id.company_id.employer_registration_number" /></th>
+                                    </tr>
+                                    <tr style="text-align: left;">
+                                        <th style="text-align: right;">Apellido y Nombre del Trabajador:</th>
+                                        <th colspan="5"><span class="font-normal" t-field="doc.official_id.name" /></th>
+                                    </tr>
+                                    <tr style="text-align: left;">
+                                        <th style="text-align: right;">Periodo de pago:</th>
+                                        <th colspan="5">
+                                            <t t-set="date_display" t-value="doc.journal_date_display.split('/')" />
+                                            <span class="font-normal" t-field="doc.journal_date_display" />
+                                            <!-- <span>1 al 31 de <t t-esc="date_display[0]" /> de  <t t-esc="date_display[1]" /></span> -->
+                                        </th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <table class="table table-bordered" style="text-align: center;">
+                                <tbody>
+                                    <t t-set="symbol" t-value="doc.official_id.currency_id.symbol" />
+                                    <t t-if="symbol">
+                                        <t t-set="symbol" t-value="symbol + '.'" />
+                                    </t>
+                                    <tr>
+                                        <td rowspan="2">Días Trab.</td>
+                                        <td rowspan="2">Salario Básico <t t-esc="symbol" /></td>
+                                        <td rowspan="2">Sub Total <t t-esc="symbol" /></td>
+                                        <td rowspan="2">Horas Extras <t t-esc="symbol" /></td>
+                                        <td rowspan="2">COMISION <t t-esc="symbol" /></td>
+                                        <td rowspan="2">Otros Ingresos <t t-esc="symbol" /></td>
+                                        <td rowspan="2">Total Salario <t t-esc="symbol" /></td>
+                                        <td colspan="2">DESCUENTOS</td>
+                                        <td rowspan="2">Total Desc <t t-esc="symbol" /></td>
+                                        <td rowspan="2">Saldo a Cobrar <t t-esc="symbol" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>I.P.S <t t-esc="symbol" /></td>
+                                        <td>Otros <t t-esc="symbol" /></td>
+                                    </tr>
+                                    <!-- Subtotal -->
+                                    <t t-set="subtotal_salary" t-value="doc.attendance_worked_days * doc.official_gross_salary" />
+                                    <!-- Otros Beneficios -->
+                                    <t t-set="total_other_beneficts" t-value="doc.vacation_amount + doc.family_bonus_amount + doc.extra_salary_amount + doc.other_beneficts_amount" />
+                                    <!-- Total Salario -->
+                                    <t t-set="total_salary" t-value="subtotal_salary + total_other_beneficts" />
+                                    <!-- Otros Descuentos -->
+                                    <t t-set="total_other_discounts" t-value="doc.salary_advance_amount + doc.other_discounts_amount" />
+                                    <!-- Total Descuento -->
+                                    <t t-set="total_discount" t-value="doc.ips_amount + total_other_discounts" />
+                                    <!-- Fixes -->
+                                    <t t-if="subtotal_salary>0">
+                                        <t t-set="subtotal_salary" t-value="'{0:,.1f}'.format(subtotal_salary).split('.')" />
+                                        <t t-set="subtotal_salary" t-value="'{},{}'.format(subtotal_salary[0].replace(',', '.'), subtotal_salary[1])" />
+                                    </t>
+                                    <t t-if="total_other_beneficts>0">
+                                        <t t-set="total_other_beneficts" t-value="'{0:,.1f}'.format(total_other_beneficts).split('.')" />
+                                        <t t-set="total_other_beneficts" t-value="'{},{}'.format(total_other_beneficts[0].replace(',', '.'), total_other_beneficts[1])" />
+                                    </t>
+                                    <t t-if="total_salary>0">
+                                        <t t-set="total_salary" t-value="'{0:,.1f}'.format(total_salary).split('.')" />
+                                        <t t-set="total_salary" t-value="'{},{}'.format(total_salary[0].replace(',', '.'), total_salary[1])" />
+                                    </t>
+                                    <t t-if="total_other_discounts>0">
+                                        <t t-set="total_other_discounts" t-value="'{0:,.1f}'.format(total_other_discounts).split('.')" />
+                                        <t t-set="total_other_discounts" t-value="'{},{}'.format(total_other_discounts[0].replace(',', '.'), total_other_discounts[1])" />
+                                    </t>
+                                    <t t-if="total_discount>0">
+                                        <t t-set="total_discount" t-value="'{0:,.1f}'.format(total_discount).split('.')" />
+                                        <t t-set="total_discount" t-value="'{},{}'.format(total_discount[0].replace(',', '.'), total_discount[1])" />
+                                    </t>
+                                    <!-- Muestro el resultado -->
+                                    <tr>
+                                        <td><span class="font-normal" t-field="doc.attendance_worked_days" /></td>
+                                        <td><span class="font-normal" t-field="doc.official_gross_salary" /></td>
+                                        <td><t t-esc="subtotal_salary" /></td>
+                                        <td><span class="font-normal" t-field="doc.overtime_amount" /></td>
+                                        <td>0<!-- Preguntar que es comision --></td>
+                                        <td><t t-esc="total_other_beneficts" /></td>
+                                        <td><t t-esc="total_salary" /></td>
+                                        <td><span class="font-normal" t-field="doc.ips_amount" /></td>
+                                        <td><t t-esc="total_other_discounts" /></td>
+                                        <td><t t-esc="total_discount" /></td>
+                                        <td><span class="font-normal" t-field="doc.net_salary_amount" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table style="width:100%; margin-top: 10%;">
+                                <tbody>
+                                    <tr>
+                                        <td style="width: 45%; border-top: 1px solid;text-align: center;">FIRMA DEL EMPLEADOR</td>
+                                        <td></td>
+                                        <td style="width: 45%; border-top: 1px solid;text-align: center;">FIRMA DEL EMPLEADO</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table>
+                                <tfoot>
+                                    <tr>
+                                        <td class="border-none text-right" colspan="6">
+                                            <t t-if="ctable==1">
+                                                Original:
+                                                <span>Empresa</span>
+                                            </t>
+                                            <t t-if="ctable==2">
+                                                Duplicado:
+                                                <span>Trabajador</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </t>
+                        <t t-if="ctable==1">
+                            <hr style="margin: 10%" />
+                        </t>
+                    </t>
+                    <!-- <p style="page-break-after:always;" /> -->
+                </body>
+            </t>
+        </template>
+
+        <template id="bm_official_journal_recipe_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="hcs_bank_management.bm_official_journal_recipe_template_pdf" />
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

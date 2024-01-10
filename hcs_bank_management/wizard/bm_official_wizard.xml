@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard default message -->
+        <record id="bm_official_wizard_view_form" model="ir.ui.view">
+            <field name="name">bm.official.wizard.form</field>
+            <field name="model">bm.official.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="message" nolabel="1" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Cerrar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="bm_official_wizard_action" model="ir.actions.act_window">
+            <field name="name">Official Wizard</field>
+            <field name="res_model">bm.official.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="bm_official_wizard_view_form" />
+            <field name="target">new</field>
+        </record>
+
+        <!-- Wizard: Crear Sueldos y Jornales -->
+        <record id="create_journal_wizard_form_view" model="ir.ui.view">
+            <field name="name">bm.official.wizard.form</field>
+            <field name="model">bm.official.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div style="display: flex; align-items: center">
+                            <h5 style="text-align: right;margin-right: 15px">Fecha de creación</h5>
+                            <field name="date" nolabel="1" style="text-align: left" />    
+                        </div>
+                    </sheet>
+                    <footer>
+                        <button string="Crear" name="create_journal" type="object" class="btn-primary"/>
+                        <button string="Cerrar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_server_official_journal_create" model="ir.actions.server">
+            <field name="name">Crear Sueldos y Jornales</field>
+            <field name="model_id" ref="model_bm_official" />
+            <field name="binding_model_id" ref="model_bm_official" />
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.create_journal_wizard()
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

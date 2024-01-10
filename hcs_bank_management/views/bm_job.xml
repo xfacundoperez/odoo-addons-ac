@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree -->
+        <record id="job_tree_view" model="ir.ui.view">
+            <field name="name">bm.job.tree.view</field>
+            <field name="model">bm.job</field>
+            <field name="arch" type="xml">
+                <tree string="Job" export_xlsx="false" duplicate="false" decoration-bf="message_needaction==False">
+                    <field name="name" />
+                    <field name="department_id" />
+                    <field name="no_of_officials" />
+                    <field name="message_needaction" invisible="1" />
+                    <field name="company_id" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="job_profession_tree_view" model="ir.ui.view">
+            <field name="name">bm.job.profession.tree.view</field>
+            <field name="model">bm.job.profession</field>
+            <field name="arch" type="xml">
+                <tree string="Job Profession" editable="top" >
+                    <field name="name" />
+                    <field name="description"/>
+                    <field name="requirements"/>
+                </tree>
+            </field>
+        </record>
+        
+        <!-- Form -->
+        <record id="job_form_view" model="ir.ui.view">
+            <field name="name">bm.job.form</field>
+            <field name="model">bm.job</field>
+            <field name="arch" type="xml">
+                <form string="Job">
+                    <sheet>
+                        <field name="company_id" invisible="1" />
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only" />
+                            <h1>
+                                <field name="name" placeholder="ej. Ventas" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="department_id" options="{'no_open': True}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description"/>
+                            <field name="requirements"/>
+                        </group>
+                        <group>
+                            <field name="profession_ids"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" options="{'open_attachments': True}" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="job_profession_form_view" model="ir.ui.view">
+            <field name="name">bm.job.profession.form</field>
+            <field name="model">bm.job.profession</field>
+            <field name="arch" type="xml">
+                <form string="Job Profession">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1 class="oe_edit_only">
+                                <field name="name" class="text-uppercase"/>
+                            </h1>
+                            <h1 class="oe_read_only">
+                                <field name="display_name" class="text-uppercase"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="description"/>
+                                <field name="requirements"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Kanban -->
+        <record id="job_kanban_view" model="ir.ui.view">
+            <field name="name">bm.job.kanban</field>
+            <field name="model">bm.job</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" sample="1">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div>
+                                    <strong>
+                                        <field name="name" />
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span>
+                                        <field name="department_id" />
+                                        &amp;nbsp;
+                                    </span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="job_search_view" model="ir.ui.view">
+            <field name="name">bm.job.search</field>
+            <field name="model">bm.job</field>
+            <field name="arch" type="xml">
+                <search string="Jobs">
+                    <field name="name" string="Job Position" />
+                    <field name="department_id" operator="child_of" />
+                    <separator />
+                    <filter name="message_needaction" string="Unread Messages" domain="[('message_needaction', '=', True)]" />
+                    <group expand="0" string="Group By">
+                        <filter string="Department" name="department" domain="[]" context="{'group_by': 'department_id'}" />
+                        <filter string="Company" name="company" domain="[]" context="{'group_by': 'company_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Inherit -->
+        <record id="official_tree_view_inherith_job" model="ir.ui.view">
+            <field name="name">bm.official.tree.job.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bank_management.official_tree_view"/>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='address_name']" position="after">
+                    <field name="admission_date" />
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="job_open_view_action" model="ir.actions.act_window">
+            <field name="name">Puestos de trabajo</field>
+            <field name="res_model">bm.job</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="job_search_view" />
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Crea posiciones de trabajo !
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_bm_job" name="Puestos de trabajo" action="job_open_view_action" parent="hcs_bank_management.menu_bm_config" sequence="1" />
+
+    </data>
+</odoo>

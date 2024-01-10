@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree -->
+        <record id="official_departure_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.departure.tree.view</field>
+            <field name="model">bm.official.departure</field>
+            <field name="arch" type="xml">
+                <tree string="Licencias" duplicate="false" decoration-info="state=='pending'"
+                    decoration-danger="state=='archived'" decoration-success="state=='finish'">
+                    <field name="official_id" />
+                    <field name="official_identification_id" />
+                    <field name="departure_reason" />
+                    <field name="departure_start" />
+                    <field name="departure_end" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+        <record id="official_departure_recession_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.departure.tree.view</field>
+            <field name="model">bm.official.departure</field>
+            <field name="arch" type="xml">
+                <tree string="Licencias" duplicate="false" decoration-info="state=='pending'"
+                    decoration-danger="state=='archived'" decoration-success="state=='finish'">
+                    <field name="official_id" />
+                    <field name="official_identification_id" />
+                    <field name="departure_reason" />
+                    <field name="departure_start" />
+                    <field name="salary_bonus_amount" />
+                    <field name="total_amount" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form -->
+        <record id="official_departure_form_view" model="ir.ui.view">
+            <field name="name">bm.official.departure.form.view</field>
+            <field name="model">bm.official.departure</field>
+            <field name="arch" type="xml">
+                <form string="Licencia del funcionario" duplicate="false">
+                    <header>
+                        <field name="state" widget="statusbar"
+                            statusbar_visible="pending,active,finish,archived"
+                            attrs="{'invisible': [('id', '=', False)]}" />
+                        <button name="check_departure_end" string="Actualizar"
+                            class="oe_highlight oe_read_only" type="object"
+                            help="Actualza los datos de la licencia actual" />
+                        <button name="print_vacation_report"
+                            attrs="{'invisible': [('departure_reason', '!=', 'vacation')]}"
+                            string="Comunicacion de vacaciones (PDF)"
+                            class="oe_highlight oe_read_only" type="object" />
+                    </header>
+                    <sheet>
+                        <field name="id" invisible="1" />
+                        <group string="Información del funcionario">
+                            <field name="official_id" options="{'no_open': True, 'no_create': True}"
+                                attrs="{'readonly': [('id', '!=', False)]}" />
+                            <field name="official_identification_id"
+                                attrs="{'invisible': [('official_id', '=', False)]}" />
+                            <field name="official_gross_salary"
+                                attrs="{'invisible': [('official_id', '=', False)]}" />
+                            <field name="official_vacation_days"
+                                attrs="{'invisible': [('official_id', '=', False)]}" />
+                            <field name="auxiliar_code"
+                                attrs="{'invisible': [('official_id', '=', False)]}" />
+                        </group>
+                        <group string="Información de la licencia"
+                            attrs="{'invisible': [('official_id', '=', False)]}">
+                            <group>
+                                <field name="reason_licences" required="1"
+                                    attrs="{'readonly': [('state', 'in', ['active', 'finish', 'archived'])]}" />
+                                <field name="departure_reason" invisible="1" />
+                                <field name="departure_description"
+                                    attrs="{'readonly': [('state', 'in', ['finish', 'archived'])]}" />
+                                <field name="departure_start"
+                                    attrs="{'readonly': [('state', 'in', ['active', 'finish', 'archived'])]}" />
+                                <field name="departure_end" required="1"
+                                    attrs="{'readonly': [('state', 'in', ['active', 'finish', 'archived'])]}" />
+                            </group>
+                            <group>
+                                <field name="total_amount" readonly="1"
+                                    attrs="{'invisible': [('id', '=', False)]}" />
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="official_departure_recession_form_view" model="ir.ui.view">
+            <field name="name">bm.official.departure.recession.form.view</field>
+            <field name="model">bm.official.departure</field>
+            <field name="arch" type="xml">
+                <form string="Licencia del funcionario" duplicate="false">
+                    <header>
+                        <field name="state" widget="statusbar"
+                            statusbar_visible="pending,active,finish,archived"
+                            attrs="{'invisible': [('id', '=', False)]}" />
+                        <button name="check_departure_end" string="Actualizar"
+                            class="oe_highlight oe_read_only" type="object"
+                            help="Actualza los datos de la licencia actual" />
+                        <button name="%(bm_official_departure_resignation_report)d"
+                            string="Imprimir comunicación" class="oe_highlight oe_read_only"
+                            type="action"
+                            attrs="{'invisible': [('departure_reason', 'not in', ['fired', 'resigned', 'retired'])]}" />
+                    </header>
+                    <sheet>
+                        <field name="id" invisible="1" />
+                        <field name="departure_reason" invisible="1" />
+                        <group>
+                            <group>
+                                <field name="official_id"
+                                    options="{'no_open': True, 'no_create': True}"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                            </group>
+                            <group attrs="{'invisible': [('official_id', '=', False)]}">
+                                <field name="reason_unlinked" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                            </group>
+                            <group attrs="{'invisible': [('official_id', '=', False)]}">
+                                <field name="official_identification_id" />
+                                <field name="official_gross_salary" />
+                                <field name="official_admission_date"
+                                    attrs="{'invisible': [('official_id', '=', False)]}" />
+                                <field name="official_vacation_days" />
+                                <field name="auxiliar_code" />
+                                <field name="seniority" />
+                            </group>
+                            <group attrs="{'invisible': [('official_id', '=', False)]}">
+                                <field name="departure_start"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                                <field name="departure_description" />
+                                <!-- Despido -->
+                                <field name="fired_justified"
+                                    attrs="{'invisible': [('reason_unlinked', 'not in', ['fired'])], 'readonly': [('id', '!=', False)]}" />
+                                <field name="fired_causes"
+                                    attrs="{'invisible': [('reason_unlinked', 'not in', ['fired'])], 'required': [('fired_justified', '!=', False)], 'readonly': [('id', '!=', False)]}" />
+                                <!-- Renuncia -->
+                                <field name="fired_justified"
+                                    string="Descuento por falta de preaviso del trabajador al empleador"
+                                    help="Conforme al Art. 90 del Codigo Laboral, en caso de que el trabajador omitiese cursar preaviso al empleador, deberá pagar a este una cantidad equivalente a la mitad del salario que corresponda al término del preaviso."
+                                    attrs="{'invisible': [('reason_unlinked', 'not in', ['resigned'])], 'readonly': [('id', '!=', False)]}" />
+                            </group>
+                        </group>
+                        <group attrs="{'invisible': [('official_id', '=', False)]}">
+                            <group string="Salarios">
+                                <field name="average_monthly_salary" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                                <field name="average_daily_salary" />
+                                <p>Días trabajados en el mes, que aún no fueron abonados.</p>
+                                <field name="unpaid_days" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                            </group>
+                            <group string="Preaviso"
+                                attrs="{'invisible': [('fired_justified', '=', False)]}">
+                                <p>¿Cuántos días de preaviso recibió?</p>
+                                <field name="notification_days_apply" />
+                                <field name="notification_days" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                            </group>
+                        </group>
+                        <group attrs="{'invisible': [('official_id', '=', False)]}">
+                            <group string="Vacaciones">
+                                <p class="position-absolute">¿Le quedan vacaciones pendientes de
+                                    tomar del año anterior?</p>
+                                <br />
+                                <h3 class="o_horizontal_separator"
+                                    style="font-size: 1.2rem; margin-bottom: 0">Causadas</h3>
+                                <field name="vacation_caused_apply" />
+                                <field name="vacation_caused" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                                <p class="position-absolute" attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}">¿Fueron otorgados días de vacaciones
+                                    correspondientes al año en curso?</p>
+                                <br />
+                                <h3 class="o_horizontal_separator" attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}"
+                                    style="font-size: 1.2rem; margin-bottom: 0">Proporcionales</h3>
+                                <field name="vacation_proportional_apply" attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}" />
+                                <field name="vacation_proportional" required="1"
+                                    attrs="{'invisible': [('reason_unlinked', '=', 'resigned')], 'readonly': [('id', '!=', False)]}" />
+                                <p class="position-absolute">¿Le quedan vacaciones por tomar que
+                                    fueron acumuladas<br />conforme al Art. 224 del Código Laboral?</p>
+                                <br />
+                                <h3 class="o_horizontal_separator"
+                                    style="font-size: 1.2rem; margin-bottom: 0; margin-top: 2rem">
+                                    Acumuladas</h3>
+                                <field name="vacation_delayed" required="1"
+                                    attrs="{'readonly': [('id', '!=', False)]}" />
+                            </group>
+                            <group string="Liquidaciones">
+                                <field name="unpaid_days_amount" />
+                                <field name="notification_amount"
+                                    attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}" />
+                                <field name="compensation_amount"
+                                    attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}" />
+                                <field name="vacation_caused_amount" />
+                                <field name="vacation_proportional_amount" attrs="{'invisible': [('reason_unlinked', '=', 'resigned')]}" />
+                                <field name="vacation_delayed_amount" />
+                                <label class="o_horizontal_separator" for="subtotal_amount"
+                                    style="font-size: 1.2rem; margin-bottom: 0" />
+                                <div>
+                                    <field name="subtotal_amount" style="margin-bottom: 0" />
+                                </div>
+                                <field string="Descuento del I.P.S" name="ips_amount" />
+                                <field string="Descuento del Preaviso" name="notification_amount" attrs="{'invisible': [('reason_unlinked', '=', 'fired')]}" />
+                                <br />
+                                <field name="salary_bonus_amount"/>
+                                <label class="o_horizontal_separator" for="total_amount"
+                                    style="font-size: 1.2rem; margin-bottom: 0" />
+                                <div>
+                                    <field name="total_amount" style="margin-bottom: 0" />
+                                </div>
+                            </group>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Filter -->
+        <record id="official_departure_search_view" model="ir.ui.view">
+            <field name="name">bm.official.departure.search.view</field>
+            <field name="model">bm.official.departure</field>
+            <field name="arch" type="xml">
+                <search string="Filtro de Licencias">
+                    <field name="official_id" filter_domain="[('official_id', 'ilike', self)]"></field>
+                    <separator />
+                    <filter string="Activos" name="state" domain="[('state', '=', 'active')]"></filter>
+                    <group expand="0" string="Group By">
+                        <filter string="Motivo" name="departure_reason" domain="[]"
+                            context="{'group_by': 'departure_reason'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Inherit -->
+        <record id="official_tree_view_inherith_departured" model="ir.ui.view">
+            <field name="name">bm.official.tree.departured.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bank_management.official_tree_view" />
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="decoration-danger">state in ['error', 'departured']</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record id="official_form_view_inherith_departured" model="ir.ui.view">
+            <field name="name">bm.official.form.departured.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bank_management.official_form_view" />
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state" options="{'clickable': [('state', 'in', ['departured'])]}"
+                        widget="statusbar" statusbar_visible="draft,error,ready" />
+                </xpath>
+                <xpath expr="//field[@name='image_1920']" position="before">
+                    <widget name="web_ribbon" title="Licencia" bg_color="bg-danger"
+                        attrs="{'invisible': ['&amp;', ('active', '=', True), ('departure_id', '=', False)]}" />
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="departure_id" options="{'no_open': False, 'no_create': True}" />
+                </xpath>
+            </field>
+        </record>
+        <record id="official_search_view_inherith_departured" model="ir.ui.view">
+            <field name="name">bm.official.search.departured.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bank_management.official_search_view" />
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='state']" position="after">
+                    <filter name="state" string="Licencia" domain="[('state', '=', 'departured')]" />
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Permisos -->
+        <record id="action_official_departure_open_view" model="ir.actions.act_window">
+            <field name="name">Licencias de funcionarios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.departure</field>
+            <field name="context">{"search_default_state":1}</field>
+            <field name="view_ids"
+                eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('official_departure_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('official_departure_form_view')})]" />
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['&amp;', ('official_iscontract', '=', False), ('departure_reason',
+                'not in', ['fired', 'resigned', 'retired'])]</field>
+            <field name="help" type="html">
+                <div class="oe_view_nocontent_create">
+                    <p>Licencias de los Funcionarios</p>
+                    <p>Todavia no se registró ninguna licencia, puedes agregarlas desde el
+                        formulario de Bandeja de Funcionarios!</p>
+                </div>
+            </field>
+        </record>
+        <record id="action_contract_departure_open_view" model="ir.actions.act_window">
+            <field name="name">Licencias de contratados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.departure</field>
+            <field name="context">{"search_default_state":1}</field>
+            <field name="view_ids"
+                eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('official_departure_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('official_departure_form_view')})]" />
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['&amp;', ('official_iscontract', '=', True), ('departure_reason',
+                'not in', ['fired', 'resigned', 'retired'])]</field>
+            <field name="help" type="html">
+                <div class="oe_view_nocontent_create">
+                    <p>Licencias de los Contratados</p>
+                    <p>Todavia no se registró ninguna licencia, puedes agregarlas desde el
+                        formulario de Bandeja de Contratados!</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Desvinculaciones -->
+        <record id="action_official_departure_recession_open_view" model="ir.actions.act_window">
+            <field name="name">Desvinculaciones de funcionarios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.departure</field>
+            <field name="view_ids"
+                eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('official_departure_recession_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('official_departure_recession_form_view')})]" />
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['&amp;', ('official_iscontract', '=', False), ('departure_reason',
+                'in', ['fired', 'resigned', 'retired'])]</field>
+            <field name="help" type="html">
+                <div class="oe_view_nocontent_create">
+                    <p>Desvinculaciones de los Funcionarios</p>
+                    <p>Todavia no se registró ninguna desvinculación, puedes agregarlas desde el
+                        formulario de Bandeja de Funcionarios!</p>
+                </div>
+            </field>
+        </record>
+        <record id="action_contract_departure_recession_open_view" model="ir.actions.act_window">
+            <field name="name">Desvinculaciones de contratados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.departure</field>
+            <field name="view_ids"
+                eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('official_departure_recession_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('official_departure_recession_form_view')})]" />
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['&amp;', ('official_iscontract', '=', True), ('departure_reason',
+                'in', ['fired', 'resigned', 'retired'])]</field>
+            <field name="help" type="html">
+                <div class="oe_view_nocontent_create">
+                    <p>Desvinculaciones de los Contratados</p>
+                    <p>Todavia no se registró ninguna recesuib, puedes agregarlas desde el
+                        formulario de Bandeja de Contratados!</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="menu_bm_options_departure" name="Licencias"
+            parent="hcs_bank_management.menu_bm_options_main" sequence="3" />
+        <menuitem id="menu_bm_options_official_departure" name="Funcionarios"
+            action="action_official_departure_open_view"
+            parent="hcs_bank_management.menu_bm_options_departure" sequence="0" />
+        <menuitem id="menu_bm_options_contract_departure" name="Contratados"
+            action="action_contract_departure_open_view"
+            parent="hcs_bank_management.menu_bm_options_departure" sequence="1" />
+        <menuitem id="menu_bm_options_departure_recession" name="Desvinculaciones"
+            parent="hcs_bank_management.menu_bm_options_main" sequence="4" />
+        <menuitem id="menu_bm_options_official_departure_recession" name="Funcionarios"
+            action="action_official_departure_recession_open_view"
+            parent="hcs_bank_management.menu_bm_options_departure_recession" sequence="0" />
+        <menuitem id="menu_bm_options_contract_departure_recession" name="Contratados"
+            action="action_contract_departure_recession_open_view"
+            parent="hcs_bank_management.menu_bm_options_departure_recession" sequence="1" />
+
+    </data>
+</odoo>

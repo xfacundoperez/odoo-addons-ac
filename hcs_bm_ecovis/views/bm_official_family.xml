@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree -->
+        <record id="official_family_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.family.tree.view</field>
+            <field name="model">bm.official.family</field>
+            <field name="arch" type="xml">
+                <tree string="Familiares">
+                    <field name="display_name"/>
+                    <field name="birthday" />
+                    <field name="school_situation" />
+                    <field name="family_type" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form -->
+        <record id="official_family_form_view" model="ir.ui.view">
+            <field name="name">bm.official.family.form.view</field>
+            <field name="model">bm.official.family</field>
+            <field name="arch" type="xml">
+                <form string="Familiar del funcionario">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" />
+                            <h1 class="oe_edit_only">
+                                <field name="name" class="text-uppercase"/>
+                            </h1>
+                            <h1 class="oe_read_only">
+                                <field name="display_name" class="text-uppercase"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="family_type"/>
+                                <field name="birthday" attrs="{'required': [('family_type', '=', 'child')]}" />
+                            </group>
+                            <group>
+                                <field name="school_situation"/>
+                            </group>
+                        </group>
+                        <field name="certificate_pdf" widget="pdf_viewer"/>
+                        <field name="certificate_pdf_name" invisible="1"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Inherit -->
+        <record id="official_tree_view_inherith_family" model="ir.ui.view">
+            <field name="name">bm.official.tree.family.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bm_ecovis.official_tree_view"/>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='address_name']" position="after">
+                    <field name="family_childs" string="Nº. de Hijos" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="official_form_view_inherith_family" model="ir.ui.view">
+            <field name="name">bm.official.form.family.inherit</field>
+            <field name="model">bm.official</field>
+            <field name="inherit_id" ref="hcs_bm_ecovis.official_form_view"/>
+            <field name="priority">20</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@data-id='more_info']" position="before">
+                    <page string="Familia">
+                        <label for="family_ids"/>
+                        <field name="family_ids"/>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_official_family_open_view" model="ir.actions.act_window">
+            <field name="name">Familiares</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official.family</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context"></field>
+            <field name="help" type="html">
+                <div class="oe_view_nocontent_create">
+                    <p>Familiares de los Funcionarios</p>
+                    <p>Todavia no se registró ningun familiar!</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <!--
+        <menuitem id="menu_bm_options_official_family" name="Familiares" action="action_official_family_open_view" parent="hcs_bm_ecovis.menu_bm_options_main" sequence="4" />
+        -->
+    </data>
+</odoo>

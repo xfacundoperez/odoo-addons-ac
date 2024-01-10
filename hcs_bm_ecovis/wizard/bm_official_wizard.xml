@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form -->
+        <record id="bm_official_wizard_view_form" model="ir.ui.view">
+            <field name="name">bm.official.wizard.form</field>
+            <field name="model">bm.official.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="message" nolabel="1" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Cerrar" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="bm_official_wizard_action" model="ir.actions.act_window">
+            <field name="name">Official Wizard</field>
+            <field name="res_model">bm.official.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="bm_official_wizard_view_form" />
+            <field name="target">new</field>
+        </record>
+
+
+
+    </data>
+</odoo>

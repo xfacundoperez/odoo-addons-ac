@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="bm_official_journal_wizard_form_view" model="ir.ui.view">
+            <field name="name">bm.official.journal.wizard.form.view</field>
+            <field name="model">bm.official.journal.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group col="2" colspan="4">
+                            <field name="format_id" options="{'no_open': False, 'no_create': True}" />
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Aplicar" name="apply_button" type="object" class="btn-primary"/>
+                        <button string="Cerrar" class="oe_highlight" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

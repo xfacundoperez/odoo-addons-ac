@@ -1,0 +1,133 @@
+<odoo>
+  <data>
+    <report
+      id="bm_official_journal_salary_advance_report"
+      string="Recibo de anticipo (PDF)"
+      model="bm.official.journal.salary"
+      report_type="qweb-pdf"
+      name="hcs_bm_ecovis.bm_official_journal_salary_advance_template"
+      menu="False"
+      paperformat="bm_official_paperformat_portrait" />
+
+    <template id="bm_official_journal_salary_advance_template_pdf">
+      <t t-call="web.html_container">
+          <style>
+            * {
+              box-sizing: border-box;
+            }
+            .row {
+              display: -webkit-box; /* wkhtmltopdf uses this one */
+              display: flex;
+              -webkit-box-pack: center; /* wkhtmltopdf uses this one */
+              justify-content: center;
+              width: 100%;
+            }
+            .row &gt; div {
+              -webkit-box-flex: 1;
+              -webkit-flex: 1;
+              flex: 1;
+            }
+            .row &gt; div:last-child {
+              margin-right: 0;
+            }
+            .w-25 {
+              width: 25%
+            }
+            .px-5 {
+              padding-left: 3rem!important;
+              padding-right: 3rem!important
+            }
+            .pt-5 {
+              padding-top: 3rem!important;
+            }
+            img {
+              width: 100%;
+              max-width: 400px;
+              height: auto;
+            }
+            .text-sign {
+              margin-bottom: 0.5rem!important;
+              font-weight: bold!important;
+              line-height: 1.2!important;
+              font-size: 1.3rem!important;
+            }
+            /* Requires cellspacing="0" on table to prevent spacing */
+
+            table {
+                border-collapse: separate !important;
+            }
+            th,
+            td {
+                border-top: none;
+                border-left: none;
+                border-right: none;
+            }
+            td {
+                border: 1px solid black!important;
+                padding: 3px!important;
+            }
+            .text-sign {
+                margin-bottom: 0.5rem!important;
+                font-weight: bold!important;
+                line-height: 1.2!important;
+                font-size: 1.3rem!important;
+            }
+            .text-center {
+              text-align: center!important;
+            }
+          </style>
+          <t t-foreach="docs" t-as="doc">
+            <div class="page">
+              <center>
+                <br />
+                <h3 t-field="doc.official_id.company_id.name" style="width: 100%; text-align: left" />
+                <br />
+                <h1 style="width: 100%; text-align: center; font-weigth: bold">RECIBO DE ANTICIPO</h1>
+                <br />
+                <p style="text-align: center;">
+                  Recibí de
+                  <b t-field="doc.official_id.company_id.name" />
+                  la suma de Gs.
+                  <b t-esc="'%.2f'%(doc.amount_to_pay)" />
+                  (
+                  <b style="text-transform: uppercase" t-esc="doc.journal_id.numero_a_letras(doc.amount_to_pay)" />
+                  ) en concepto de anticipo de mis haberes correspondientes al mes de
+                  <span t-esc="mes" />
+                  del año
+                  <span t-esc="anio" />
+                  a ser descontado íntegramente de la liquidación de dichos haberes.
+                </p>
+              </center>
+              <div class="row pt-5">
+                <div class="px-5" />
+                <div>
+                  <center>
+                    <p style="text-align: center;">
+                      <span t-field="doc.official_id.company_id.location_id.name" />
+                      <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')" />
+                    </p>
+                    <br />
+                    <p>______________________________</p>
+                    <p t-field="doc.official_id.name" />
+                    <p style="text-align: center;">
+                      C.I. Nro.:
+                      <span t-field="doc.official_id.identification_id" />
+                    </p>
+                  </center>
+                </div>
+              </div>
+            </div>
+          </t>
+      </t>
+    </template>
+
+    <template id="bm_official_journal_salary_advance_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="hcs_bm_ecovis.bm_official_journal_salary_advance_template_pdf" />
+            </t>
+        </t>
+    </template>
+
+  </data>
+</odoo>

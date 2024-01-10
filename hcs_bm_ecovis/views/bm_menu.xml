@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <data>
+                <!-- Principal -->
+                <menuitem id="menu_bm_root" name="Funcionarios" web_icon="hcs_bm_ecovis,static/description/icon.png" sequence="0" />
+
+                <!-- Option -->
+                <menuitem id="menu_bm_options_main" name="Opciones" parent="hcs_bm_ecovis.menu_bm_root" sequence="1" />
+
+                <!-- Config -->
+                <menuitem id="menu_bm_config" name="Configuración" parent="hcs_bm_ecovis.menu_bm_root" sequence="2" />
+
+        </data>
+</odoo>

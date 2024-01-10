@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree -->
+        <record id="official_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.tree.view.company</field>
+            <field name="model">bm.official</field>
+            <field name="arch" type="xml">
+                <tree default_order="state" duplicate="false" decoration-info="state in ['pending']" decoration-warning="state=='draft'" decoration-success="state=='ready'">
+                    <field name="employer_number" />
+                    <field name="identification_id" />
+                    <field name="name" />
+                    <field name="gender" />
+                    <field name="marital" />
+                    <field name="birthday" />
+                    <field name="country_id" />
+                    <field name="address_name" />
+                    <field name="profession_id" />
+                    <field name="state" invisible="1" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="bm_official_schedules_tree_view" model="ir.ui.view">
+            <field name="name">bm.official.schedules.tree.view</field>
+            <field name="model">bm.official.schedules</field>
+            <field name="arch" type="xml">
+                <tree string="Dias de la asistencia" editable="bottom" create="false" delete="false">
+                    <field name="day_week" readonly="1" />
+                    <field name="wh_first" />
+                    <field name="wh_second" />
+                    <field name="laboral" />
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Form -->
+        <record id="official_form_view" model="ir.ui.view">
+            <field name="name">bm.official.form.view</field>
+            <field name="model">bm.official</field>
+            <field name="arch" type="xml">
+                <form string="Funcionarios" class="o_employee_form">
+                    <header attrs="{'invisible': [('id', '=', False)]}">
+                        <field name="state" widget="statusbar" statusbar_visible="draft,error,ready" />
+                    </header>
+                    <sheet>
+                        <div name="button_box" class="oe_button_box"></div>
+                        <field name="image_1920" widget='image' class="oe_avatar" options='{"zoom": true}' />
+                        <div class="oe_title">
+                            <field name="active" invisible="1" />
+                            <field name="unlinked" invisible="1" />
+                            <h1 class="oe_read_only">
+                                <field name="name" class="text-uppercase" readonly="1" />
+                            </h1>
+                            <div class="oe_edit_only">
+                                <div class="d-flex">
+                                    <field name="name_first" placeholder="Nombre" />
+                                </div>
+                                <div class="d-flex">
+                                    <field name="surname_first" placeholder="Apellido" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <group class="d-flex">
+                            <group>
+                                <field name="identification_type" required="True" />
+                                <field name="identification_id" required="True" />
+                                <field name="identification_expiry" />
+                                <field name="birthday" options="{'format': 'YYYY-MM-DD'}" />
+                                <field name="country_birth_id" placeholder="Pais" class="o_address_country" options="{'no_open': False, 'no_create': False}" />
+                                <field name="state_birth_id" placeholder="Departamento" class="o_address_country" options="{'no_open': False, 'no_create': False}" />
+                                <field name="gender" />
+                                <field name="marital" />
+                            </group>
+                            <group>
+                                <field name="employer_number" />
+                                <label for="address_name" class="oe_read_only" />
+                                <div class="o_address_format oe_read_only">
+                                    <field name="country_id" />
+                                    <br />
+                                    <field name="address_name" />
+                                    <br />
+                                    <field name="neighborhood_id" />
+                                    <br />
+                                    <field name="zip" />
+                                </div>
+                                <label for="address_name" class="oe_edit_only" />
+                                <div class="o_address_format oe_edit_only">
+                                    <field name="street" placeholder="Direccion..." class="mr-2" />
+                                    <field name="street2" placeholder="Direccion 2..." style="width: 45%;margin-right: 5%;" attrs="{'visible': [('street2', '!=', '')]}" />
+                                    <field name="house_no" placeholder="Numero de casa" class="w-50" />
+                                    <field name="reference" placeholder="Referencia" attrs="{'visible': [('reference', '!=', '')]}" />
+                                    <field name="country_id" placeholder="Pais" options="{'no_open': False, 'no_create': False}" />
+                                    <field name="state_id" placeholder="Ciudad" class="w-100" options="{'no_open': False, 'no_create': False}" />
+                                    <field name="location_id" class="o_address_city" placeholder="Localidad" options="{'no_open': True, 'no_create': False}" />
+                                    <field name="neighborhood_id" class="o_address_state" placeholder="Barrio" options="{'no_open': True, 'no_create': False}" />
+                                    <field name="zip" class="o_address_zip" placeholder="C. P." />
+                                </div>
+                                <field name="particular_phone" widget="phone" />
+                                <field name="mobile_phone" widget="phone" />
+                                <field name="work_phone" widget="phone" />
+                                <field name="email" widget="email" context="{'gravatar_image': True}" />
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="idenfitication_image_front" widget="image" />
+                            </group>
+                            <group>
+                                <field name="idenfitication_image_back" widget="image" />
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Laboral" autofocus="autofocus">
+                                <group>
+                                    <field name="company_id" options="{'no_open': False, 'no_create': False}" readonly="1" />
+                                </group>
+                                <group string="Contrato" priority="1">
+                                    <group>
+                                        <field name="iscontract" />
+                                        <field name="contract_type" />
+                                        <field name="admission_date" />
+                                        <field name="contract_end_date" />
+                                    </group>
+                                    <group>
+                                        <field name="job_id" />
+                                        <field name="profession_id" options="{'no_open': True, 'no_create': True}" />
+                                        <field name="currency_id" options="{'no_open': True, 'no_create': True}" />
+                                        <field name="gross_salary" />
+                                        <field name="payment_mode" />
+                                    </group>
+                                </group>
+                                <group string="Horarios">
+                                    <field name="schedules_ids" nolabel="1" />
+                                </group>
+                            </page>
+                            <page data-id="more_info" string="Mas información">
+                                <label for="notes" />
+                                <field name="notes" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" />
+                        <field name="activity_ids" widget="mail_activity" />
+                        <field name="message_ids" widget="mail_thread" options="{'thread_level': 1}" />
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Filter -->
+        <record id="official_search_view" model="ir.ui.view">
+            <field name="name">bm.official.search.view</field>
+            <field name="model">bm.official</field>
+            <field name="arch" type="xml">
+                <search string="Filtrar movimientos">
+                    <field name="name" string="Nombre Completo" filter_domain="[('name', 'ilike', self)]" />
+                    <field name="name_first" string="Nombre" filter_domain="[('name_first', 'ilike', self)]" />
+                    <field name="surname_first" string="Apellido" filter_domain="[('surname_first', 'ilike', self)]" />
+                    <field name="company_id" string="Nombre de la Empresa" filter_domain="[('company_id', 'ilike', self)]" />
+                    <field name="identification_id" />
+                    <separator />
+                    <filter name="state" string="Borrador" domain="[('state', '=', 'draft')]" />
+                    <filter name="state" string="Listo" domain="[('state', '=', 'ready')]" />
+                    <filter name="state" string="Pendiente" domain="[('state', '=', 'pending')]" />
+                    <filter name="state" string="Revisar" domain="[('state', '=', 'error')]" />
+                    <separator />
+                    <filter name="inactive" string="Archivados" domain="[('active', '=', False)]" />
+                    <separator />
+                    <!-- <filter name="inactive" string="Desvinculados" domain="[('unlinked', '=', True)]" /> -->
+                    <group expand="0" string="Group By">
+                        <filter name="state" domain="[]" context="{'group_by': 'state'}" />
+                        <filter name="state_id" domain="[]" context="{'group_by': 'state_id'}" />
+                        <filter name="location_id" domain="[]" context="{'group_by': 'location_id'}" />
+                        <filter name="neighborhood_id" domain="[]" context="{'group_by': 'neighborhood_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_official_open_view_company" model="ir.actions.act_window">
+            <field name="name">Bandeja de Funcionarios</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="official_tree_view" />
+            <field name="context">{}</field>
+            <field name="domain">[('iscontract', '=', False)]</field>
+            <field name="help" type="html">
+                <div class="o_view_nocontent_empty_folder">
+                    <p>Bandeja de los Funcionarios</p>
+                    <p>Todavia no se registró ningun funcionario!</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="action_contract_open_view_company" model="ir.actions.act_window">
+            <field name="name">Bandeja de Contratados</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bm.official</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="official_tree_view" />
+            <field name="context">{}</field>
+            <field name="domain">[('iscontract', '=', True)]</field>
+            <field name="help" type="html">
+                <div class="o_view_nocontent_empty_folder">
+                    <p>Bandeja de los Contratados</p>
+                    <p>Todavia no se registró ningun contrato!</p>
+                </div>
+            </field>
+        </record>
+
+        <!-- Menus -->
+        <menuitem id="menu_bm_inbox_main" name="Bandejas" parent="hcs_bm_ecovis.menu_bm_root" sequence="0" />
+
+        <menuitem id="menu_bm_inbox_official_company" name="Funcionarios" action="action_official_open_view_company" parent="hcs_bm_ecovis.menu_bm_inbox_main" sequence="4" />
+        <menuitem id="menu_bm_inbox_contract_company" name="Contratados" action="action_contract_open_view_company" parent="hcs_bm_ecovis.menu_bm_inbox_main" sequence="5" />
+    </data>
+</odoo>

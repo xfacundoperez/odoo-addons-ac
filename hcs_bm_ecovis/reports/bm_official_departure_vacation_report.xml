@@ -1,0 +1,117 @@
+<odoo>
+  <data>
+    <report
+      id="bm_official_departure_vacation_report"
+      string="Comunicación de vacaiones (PDF)"
+      model="bm.official.departure"
+      report_type="qweb-pdf"
+      name="hcs_bm_ecovis.bm_official_departure_vacation_template"
+      menu="False"
+      paperformat="bm_official_paperformat_portrait" />
+
+    <template id="bm_official_departure_vacation_template_pdf">
+      <t t-call="web.html_container">
+          <style>
+            * {
+              box-sizing: border-box;
+            }
+            /* Requires cellspacing="0" on table to prevent spacing */
+            table {
+                border-collapse: separate !important;
+            }
+            .text-sign {
+                margin-bottom: 0.5rem!important;
+                font-weight: bold!important;
+                line-height: 1.2!important;
+                font-size: 1.3rem!important;
+            }
+            .text-center {
+              text-align: center!important;
+            }
+          </style>
+          <t t-foreach="docs" t-as="doc">
+            <div class="page">
+              <br />
+              <h3 t-field="doc.official_id.company_id.name" style="width: 100%; text-align: left" />
+              <br />
+              <h1 style="width: 100%; text-align: center; font-weigth: bold">COMUNICACION DE VACACIONES</h1>
+              <br />
+              <br />
+              <p style="width: 100%; text-align: right;">
+                <t t-if="doc.official_id.company_id.location_id">
+                  <span t-esc="doc.official_id.company_id.location_id.name" />
+                  ,
+                </t>
+                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d de %B de %Y')" />
+              </p>
+              <p style="width: 100%; text-align: left">Señor/a</p>
+              <p t-field="doc.official_id.name" />
+              <p style="width: 100%; text-align: left">Presente</p>
+              <p style="width: 100%; text-align: right; font-weigth: bold">Ref.: COMUNICACIÓN DE VACACIONES</p>
+              <br />
+              <p>
+                Por la presente, ponemos a su conocimiento que las vacaciones anuales
+                que a usted le corresponden de  días, de conformidad con el Art. 218
+                del Código Laboral, de acuerdo a su antigüedad, vacaciones que podrá
+                usufructuarlas como sigue:
+              </p>
+              <br />
+              <table style="width: 100%">
+                <tr>
+                  <td style="width: 25%;">Desde el dia:</td>
+                  <td style="width: 75%; text-align: left;">
+                    <span t-esc="doc.departure_start.strftime('%d de %B de %Y')" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 25%;">Hasta el dia:</td>
+                  <td style="width: 75%; text-align: left;">
+                    <span t-esc="doc.departure_end.strftime('%d de %B de %Y')" />
+                  </td>
+                </tr>
+              </table>
+              <br />
+              <p>
+                Su reintegro a las labores comienzan a partir del día
+                <span t-esc="(doc.departure_end + datetime.timedelta(days=1)).strftime('%d/%m/%Y')" />
+                en el horario establecido; sírvase pasar el día
+                <span t-esc="(doc.departure_end + datetime.timedelta(days=1)).strftime('%d/%m/%Y')" />
+                por la oficina de Recursos Humanos con el objeto de percibir
+                el importe de su jornal de acuerdo al Art. 220 del Código Laboral.
+              </p>
+              <br />
+              <table style="width: 100%">
+                <tr style="text-align: right; padding-right: 15%">
+                  <td>Atentamente.</td>
+                </tr>
+                <tr style="text-align: right; padding-right: 15%">
+                  <td>
+                    <p>______________________________</p>
+                    <p t-field="doc.official_id.name" />
+                    <p t-field="doc.official_id.profession_id.name" />
+                  </td>
+                </tr>
+              </table>
+              <br />
+              <p style="width: 100%; text-align: left">
+                Notificado/a en fecha:
+                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y')" />
+              </p>
+              <br />
+              <p>______________________________</p>
+              <p style="width: 100%; text-align: left">Firma del empleado</p>
+            </div>
+          </t>
+        </t>
+    </template>
+
+    <template id="bm_official_departure_vacation_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="hcs_bm_ecovis.bm_official_departure_vacation_template_pdf" />
+            </t>
+        </t>
+    </template>
+
+  </data>
+</odoo>

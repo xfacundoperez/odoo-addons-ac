@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="mail.channel" id="bm_mail_channel_group_bm_company" forcecreate="False">
+            <field name="name">General Empresas</field>
+            <field name="channel_type">chat</field>
+            <field name="public">groups</field>
+            <field name="email_send" eval="True" />
+            <field name="group_public_id" ref="hcs_bm_ecovis.group_bm_company" />
+            <field name="group_ids" eval="[(6, 0, [ref('hcs_bm_ecovis.group_bm_company')])]" />
+        </record>
+
+        <record model="mail.channel" id="bm_mail_channel_group_bm_ecovis" forcecreate="False">
+            <field name="name">General Ecovis</field>
+            <field name="channel_type">chat</field>
+            <field name="public">groups</field>
+            <field name="email_send" eval="True" />
+            <field name="group_public_id" ref="hcs_bm_ecovis.group_bm_ecovis" />
+            <field name="group_ids" eval="[(6, 0, [ref('hcs_bm_ecovis.group_bm_ecovis')])]" />
+        </record>
+    </data>
+
+</odoo>

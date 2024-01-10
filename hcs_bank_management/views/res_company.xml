@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Tree -->
+    <record id="bm_res_company_schedules_tree_view" model="ir.ui.view">
+      <field name="name">bm.res.company.schedules.tree.view</field>
+      <field name="model">bm.res.company.schedules</field>
+      <field name="arch" type="xml">
+        <tree string="Dias de la asistencia" editable="bottom" create="false" delete="false">
+          <field name="day_week" readonly="1" />
+          <field name="checkin" />
+          <field name="checkout" />
+          <field name="laboral" />
+        </tree>
+      </field>
+    </record>
+
+    <!-- Form -->
+    <record id="hcs_bank_management_inherith_view_company_form" model="ir.ui.view">
+      <field name="name">hcs_bank_management.inherit.res.company.form</field>
+      <field name="model">res.company</field>
+      <field name="inherit_id" ref="base.view_company_form" />
+      <field name="priority">1000</field>
+      <field name="type">form</field>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='currency_id']" position="after">
+          <field name="currency_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" />
+        </xpath>
+        <xpath expr="//div[hasclass('o_address_format')]" position="replace">
+          <div class="o_address_format">
+            <div class="oe_read_only">
+              <field name="country_id"/>
+              <field name="address_name"/>
+              <field name="neighborhood_id"/>
+              <field name="zip" style="margin-left: 5px;"/>
+            </div>
+            <div class="oe_edit_only">
+              <field name="street" placeholder="Direccion..." class="o_address_street mr-2" />
+              <field name="street2" placeholder="Direccion 2..." class="o_address_street" style="width: 45%;margin-right: 5%;" attrs="{'visible': [('street2', '!=', '')]}" />
+              <field name="house_no" placeholder="Numero de casa" class="w-50" />
+              <field name="reference" placeholder="Referencia" attrs="{'visible': [('reference', '!=', '')], 'required': [('house_no', 'in', ['0', '', False])]}" />
+              <field name="country_id" placeholder="Pais" class="o_address_country" options="{&quot;no_open&quot;: True}" />
+              <field name="state_id" placeholder="Departamento" class="w-100" options="{'no_open': False, 'no_create': False}" />
+              <field name="location_id" class="o_address_city" placeholder="Localidad" options="{'no_open': True, 'no_create': False}" />
+              <field name="neighborhood_id" class="o_address_state" placeholder="Barrio" options="{'no_open': True, 'no_create': False}" />
+              <field name="zip" placeholder="C. P." class="o_address_zip" />
+            </div>
+          </div>
+        </xpath>
+        <xpath expr="//field[@name='vat']" position="before">
+          <field name="debit_account" />
+          <field name="credit_account" />
+          <field name="years" />
+          <field name="ips_worker_contribution" />
+          <field name="exploitation" />
+          <field name="employer_registration_number" />
+          <br />
+          <field name="daytime_overtime" />
+          <field name="night_overtime" />
+          <field name="holiday_overtime" />
+        </xpath>
+        <xpath expr="//notebook/page" position="inside">
+          <group string="Horarios" attrs="{'invisible': [('id', '=', False)]}">
+            <field name="schedules_ids" nolabel="1" />
+          </group>
+        </xpath>
+
+      </field>
+    </record>
+
+  </data>
+</odoo>
